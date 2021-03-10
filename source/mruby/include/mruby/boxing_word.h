@@ -60,7 +60,7 @@ enum mrb_special_consts {
 #define BOXWORD_SHIFT_VALUE_P(o,n) \
   (((o).w & BOXWORD_##n##_MASK) == BOXWORD_##n##_FLAG)
 #define BOXWORD_OBJ_TYPE_P(o,n) \
-  (!mrb_immediate_p(o) && mrb_val_union(o).bp->tt == MRB_TT_##n)
+  (/*!mrb_immediate_p(o) && */mrb_val_union(o).bp->tt == MRB_TT_##n)
 
 /*
  * mrb_value representation:

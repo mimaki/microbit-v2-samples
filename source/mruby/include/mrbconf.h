@@ -10,6 +10,13 @@
 #include <limits.h>
 #include <stdint.h>
 
+// Defines for Micro:bit
+#define MRB_32BIT
+#define MRB_USE_FLOAT   // MRB_USE_FLOAT32
+#define MRB_WORD_BOXING
+#define POOL_PAGE_SIZE 1024
+#define MRB_CONSTRAINED_BASELINE_PROFILE  /* for micon */
+
 /* architecture selection: */
 /* specify -DMRB_32BIT or -DMRB_64BIT to override */
 #if !defined(MRB_32BIT) && !defined(MRB_64BIT)
@@ -26,7 +33,7 @@
 
 /* configuration options: */
 /* add -DMRB_USE_FLOAT32 to use float instead of double for floating point numbers */
-//#define MRB_USE_FLOAT32
+// #define MRB_USE_FLOAT32
 
 /* exclude floating point numbers */
 //#define MRB_NO_FLOAT
@@ -69,10 +76,10 @@
 #endif
 
 /* represent mrb_value in boxed double; conflict with MRB_USE_FLOAT32 and MRB_NO_FLOAT */
-//#define MRB_NAN_BOXING
+// #define MRB_NAN_BOXING
 
 /* represent mrb_value as a word (natural unit of data for the processor) */
-//#define MRB_WORD_BOXING
+// #define MRB_WORD_BOXING
 
 /* represent mrb_value as a struct; occupies 2 words */
 //#define MRB_NO_BOXING
@@ -131,7 +138,7 @@
 //#define POOL_ALIGNMENT 4
 
 /* page size of memory pool */
-//#define POOL_PAGE_SIZE 16000
+// #define POOL_PAGE_SIZE 1024
 
 /* arena size */
 //#define MRB_GC_ARENA_SIZE 100

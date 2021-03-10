@@ -13,6 +13,8 @@
 #include <mruby/_string.h>
 #include <mruby/class.h>
 
+extern void mbprintf(const char *msg);
+
 void mrb_init_core(mrb_state*);
 void mrb_init_mrbgems(mrb_state*);
 
@@ -40,6 +42,8 @@ mrb_open_core(mrb_allocf f, void *ud)
   static const mrb_state mrb_state_zero = { 0 };
   mrb_state *mrb;
 
+// mbprintf("mrb_open_core: start\n");
+
   if (f == NULL) f = mrb_default_allocf;
   mrb = (mrb_state *)(f)(NULL, NULL, sizeof(mrb_state), ud);
   if (mrb == NULL) return NULL;
@@ -54,8 +58,14 @@ mrb_open_core(mrb_allocf f, void *ud)
     return NULL;
   }
 
+// mbprintf("mrb_open_core: end\n");
   return mrb;
 }
+
+volatile uint32_t _p_l = 0xffffffff;
+volatile uint32_t _p_h = 0x00000000;
+volatile size_t _s_l = 0;
+volatile size_t _s_h = 0;
 
 void*
 mrb_default_allocf(mrb_state *mrb, void *p, size_t size, void *ud)
@@ -65,7 +75,21 @@ mrb_default_allocf(mrb_state *mrb, void *p, size_t size, void *ud)
     return NULL;
   }
   else {
-    return realloc(p, size);
+    // return realloc(p, size);
+    void *pp = realloc(p, size);
+    // if (!pp) {
+    //   mbprintf("mrb_default_allocf: alloc fail.\n");
+    // }
+    if (_p_l > (uint32_t)pp) {
+      _p_l = (uint32_t)pp;
+      _s_l = size;
+    }
+    if (_p_h < (uint32_t)pp) {
+      _p_h = (uint32_t)pp;
+      _s_h = size;
+    }
+
+    return pp;
   }
 }
 
@@ -88,6 +112,7 @@ init_mrbgems(mrb_state *mrb, void *opaque)
 MRB_API mrb_state*
 mrb_open_allocf(mrb_allocf f, void *ud)
 {
+// mbprintf("mrb_open_allocf: start.\n");
   mrb_state *mrb = mrb_open_core(f, ud);
 
   if (mrb == NULL) {
@@ -101,6 +126,7 @@ mrb_open_allocf(mrb_allocf f, void *ud)
   }
   mrb_gc_arena_restore(mrb, 0);
 #endif
+// mbprintf("mrb_open_allocf: end.\n");
   return mrb;
 }
 

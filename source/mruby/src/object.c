@@ -11,6 +11,8 @@
 #include <mruby/class.h>
 #include <mruby/presym.h>
 
+// extern void mbprintf(const char*msg);
+
 MRB_API mrb_bool
 mrb_obj_eq(mrb_state *mrb, mrb_value v1, mrb_value v2)
 {
@@ -593,7 +595,11 @@ mrb_Float(mrb_state *mrb, mrb_value val)
 MRB_API mrb_value
 mrb_to_str(mrb_state *mrb, mrb_value val)
 {
-  return mrb_ensure_string_type(mrb, val);
+  // return mrb_ensure_string_type(mrb, val);
+  // mbprintf("mrb_to_str: start.\n");
+  mrb_value s = mrb_ensure_string_type(mrb, val);
+  // mbprintf("mrb_to_str: end.\n");
+  return s;
 }
 
 /* obsolete: use mrb_ensure_string_type() instead */
@@ -607,6 +613,7 @@ MRB_API mrb_value
 mrb_ensure_string_type(mrb_state *mrb, mrb_value str)
 {
   if (!mrb_string_p(str)) {
+    mbprintf("mrb_ensure_string_type: type error.\n");
     mrb_raisef(mrb, E_TYPE_ERROR, "%Y cannot be converted to String", str);
   }
   return str;

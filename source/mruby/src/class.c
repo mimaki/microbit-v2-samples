@@ -19,6 +19,8 @@
 #include <mruby/opcode.h>
 #include <mruby/presym.h>
 
+// extern void mbprintf(const char *msg);
+
 union mt_ptr {
   struct RProc *proc;
   mrb_func_t func;
@@ -1084,18 +1086,25 @@ mrb_get_args(mrb_state *mrb, const char *format, ...)
       {
         mrb_value ss;
         const char **ps;
+// mbprintf("mrb_get_args: z start.\n");
 
         ps = va_arg(ap, const char**);
+// mbprintf("va_arg done.\n");
         if (i < argc) {
           ss = argv[i++];
           if (altmode && mrb_nil_p(ss)) {
             *ps = NULL;
+// mbprintf("ps=NULL\n");
           }
           else {
+// mbprintf("mrb_to_str start.\n");
             mrb_to_str(mrb, ss);
+// mbprintf("mrb_to_str done.\n");
             *ps = RSTRING_CSTR(mrb, ss);
+// mbprintf(ps);
           }
         }
+// mbprintf("mrb_get_args: z end.\n");
       }
       break;
     case 'a':
